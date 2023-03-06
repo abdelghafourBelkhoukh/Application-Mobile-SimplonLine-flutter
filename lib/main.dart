@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text(
             "Forgot Password?",
             style: TextStyle(
-              color: Colors.blue,
+              color: Colors.red,
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
+                primary: Colors.red,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
