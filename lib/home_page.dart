@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
             image: AssetImage("images/256490.jpg"),
             fit: BoxFit.cover,
             opacity:0.4,
-            colorFilter: ColorFilter.linearToSrgbGamma()
+            // colorFilter: ColorFilter.linearToSrgbGamma()
         ),
       ),
       child:Center(

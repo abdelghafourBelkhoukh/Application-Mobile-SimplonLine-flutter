@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_app/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +31,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-    Future<FirebaseApp> _initializeFirebase() async {
+  Future<FirebaseApp> _initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
@@ -152,18 +156,39 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 50.0,
             child: ElevatedButton(
               onPressed: () async {
-                // User? user = await loginUsingEmailPassword(
-                //     email: _emailController.text,
-                //     password: _passwordController.text,
-                //     context: context);
-                // print(user);
-                if(_emailController.text == "belkhoukh@gmail.com"){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>  HomePage()
-                    ),
-                  );
+                final uri =
+                    Uri.parse('http://192.168.8.114:8080/api/auth/login');
+                final headers = {'Content-Type': 'application/json'};
+                Map<String, dynamic> body = {
+                  // 'email': _emailController.text,
+                  // 'password': _passwordController.text,
+                  'email': 'belkhoukh@example.com',
+                  'password': 'password123',
+                  'role': 'STUDENT'
+                };
+                String jsonBody = json.encode(body);
+                final encoding = Encoding.getByName('utf-8');
+
+                Response response = await post(
+                  uri,
+                  headers: headers,
+                  body: jsonBody,
+                  encoding: encoding,
+                );
+
+                int statusCode = response.statusCode;
+                const storage = FlutterSecureStorage();
+
+                if (statusCode == 200) {
+                  String responseBody = response.body.toString();
+                  Map<String, dynamic> data = json.decode(responseBody);
+                  String token = data['token'];
+                  await storage.write(key: 'token', value: token);
+                  print('Login successfully');
+                  var value = await storage.read(key: 'token');
+                  print(value);
+                } else {
+                  print("echec");
                 }
               },
               child: Text(
